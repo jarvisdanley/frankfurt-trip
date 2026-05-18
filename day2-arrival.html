@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Thu May 21 · Arrival · Frankfurt</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --card: #141414; --border: #222;
+    --text: #e0e0e0; --dim: #888; --accent: #ff6a00;
+    --green: #2ecc71; --blue: #3498db;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+    max-width: 480px; margin: 0 auto; padding: 16px 16px 48px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .day-header {
+    text-align: center; padding: 24px 0 16px;
+    border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .day-header .day-num {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); font-weight: 700;
+  }
+  .day-header h1 { font-size: 1.3rem; margin: 4px 0 2px; }
+  .day-header .date { color: var(--dim); font-size: 0.85rem; }
+  .day-header .nav {
+    display: flex; justify-content: space-between; margin-top: 12px;
+    font-size: 0.8rem;
+  }
+  .day-header .nav a { color: var(--dim); text-decoration: none; }
+  .day-header .nav a:hover { color: var(--accent); }
+
+  .status-strip {
+    display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .pill {
+    font-size: 0.72rem; padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--border); white-space: nowrap;
+  }
+  .pill.good { border-color: var(--green); color: var(--green); }
+  .pill.warn { border-color: var(--accent); color: var(--accent); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  .card h2 { font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .card h2 .icon { font-size: 1.1rem; }
+
+  .timeline-item {
+    display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-time {
+    font-size: 0.75rem; color: var(--accent); font-weight: 700;
+    min-width: 65px; text-align: right; padding-top: 1px;
+  }
+  .timeline-body { flex: 1; font-size: 0.85rem; }
+  .timeline-body .sub { font-size: 0.75rem; color: var(--dim); margin-top: 2px; }
+
+  .alert {
+    padding: 12px; border-radius: 8px; margin-bottom: 12px;
+    font-size: 0.82rem;
+    background: rgba(255,106,0,0.08); border: 1px solid rgba(255,106,0,0.2);
+  }
+  .alert.info { background: rgba(52,152,219,0.08); border: 1px solid rgba(52,152,219,0.2); }
+  .alert strong { color: var(--blue); }
+  .alert.warn strong { color: var(--accent); }
+
+  .transit-step {
+    display: flex; gap: 10px; padding: 8px 0; align-items: center;
+    border-bottom: 1px dashed var(--border); font-size: 0.82rem;
+  }
+  .transit-step:last-child { border-bottom: none; }
+  .transit-step .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: #000; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0;
+  }
+
+  .weather-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; font-size: 0.85rem;
+  }
+  .weather-row .temp { font-size: 1.2rem; font-weight: 600; }
+
+  .quick-action {
+    display: block; width: 100%; padding: 12px; text-align: center;
+    border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+    text-decoration: none; margin-top: 8px;
+    background: var(--accent); color: #000; border: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="day-header">
+  <div class="day-num">Day 2 of 6</div>
+  <h1>Arrival in Frankfurt</h1>
+  <div class="date">Thursday, May 21, 2026</div>
+  <div class="nav">
+    <a href="#">← Travel Day</a>
+    <a href="#">Concert Night 1 →</a>
+  </div>
+</div>
+
+<div class="status-strip">
+  <span class="pill good">✈️ On Time</span>
+  <span class="pill good">🇩🇪 Passport Ready</span>
+  <span class="pill warn">🌤️ 73°F / 53°F</span>
+</div>
+
+<!-- TIMELINE -->
+<div class="card">
+  <h2><span class="icon">⏱️</span> Today's Timeline</h2>
+
+  <div class="timeline-item">
+    <div class="timeline-time">9:50 AM</div>
+    <div class="timeline-body">
+      Land at Frankfurt Airport (FRA)
+      <div class="sub">DL 86 from Detroit · Terminal 2</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">10:10 AM</div>
+    <div class="timeline-body">
+      Passport control &amp; baggage claim
+      <div class="sub">Have passport out. Non-EU line. ~20 min.</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">10:30 AM</div>
+    <div class="timeline-body">
+      <strong>🚊 Get to the city</strong>
+      <div class="sub">Follow signs to Regionalbahnhof under Terminal 1. If you landed at Terminal 2, take SkyLine shuttle to T1 first.</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">11:00 AM</div>
+    <div class="timeline-body">
+      Arrive Hauptbahnhof
+      <div class="sub">S-Bahn S8 or S9. 11 minutes. €5.35 per ticket — buy from green RMV machine on the platform.</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">11:15 AM</div>
+    <div class="timeline-body">
+      Walk to LUME Boutique Hotel
+      <div class="sub">7-minute walk from Hbf south exit. Neckarstraße 7-13. Drop bags if room isn't ready — check-in at 3 PM.</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">3:00 PM</div>
+    <div class="timeline-body">
+      Hotel check-in
+      <div class="sub">Premium Double, 1 King. +49-69-756660</div>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-time">Evening</div>
+    <div class="timeline-body">
+      Settle in, explore the neighborhood
+      <div class="sub">Bahnhofsviertel. Grab coffee at Why Coffee (Kaiserstraße 36, 4-min walk).</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSIT DETAILS -->
+<div class="card">
+  <h2><span class="icon">🚊</span> Airport → Hotel · Step by Step</h2>
+
+  <div class="transit-step">
+    <div class="step-num">1</div>
+    <div>Exit baggage claim. If Terminal 2, take <strong>SkyLine</strong> shuttle to Terminal 1 (free, 2 min).</div>
+  </div>
+  <div class="transit-step">
+    <div class="step-num">2</div>
+    <div>Follow signs for <strong>Regionalbahnhof</strong> (regional train station). Go down two levels from T1 arrivals.</div>
+  </div>
+  <div class="transit-step">
+    <div class="step-num">3</div>
+    <div>Find green <strong>RMV</strong> ticket machine. Select English → Single ticket → Frankfurt City. <strong>€5.35</strong>. Tap to pay.</div>
+  </div>
+  <div class="transit-step">
+    <div class="step-num">4</div>
+    <div>Platform 1. Board <strong>S8</strong> (direction Offenbach/Hanau) or <strong>S9</strong> (direction Hanau). Either works. Every 15 minutes.</div>
+  </div>
+  <div class="transit-step">
+    <div class="step-num">5</div>
+    <div>Ride 3 stops (~11 min) to <strong>Frankfurt Hauptbahnhof</strong>.</div>
+  </div>
+  <div class="transit-step">
+    <div class="step-num">6</div>
+    <div>Exit south side of station. Walk 7 minutes to Neckarstraße 7-13.</div>
+  </div>
+</div>
+
+<!-- WEATHER -->
+<div class="card">
+  <h2><span class="icon">🌤️</span> Weather</h2>
+  <div class="weather-row">
+    <span>Overcast · Light jacket weather</span>
+    <span class="temp">73° / 53°F</span>
+  </div>
+  <div style="font-size:0.75rem;color:var(--dim);margin-top:4px">No rain expected. Cloud cover will burn off by late afternoon.</div>
+</div>
+
+<!-- COFFEE -->
+<div class="card">
+  <h2><span class="icon">☕</span> Coffee Nearby</h2>
+  <div class="timeline-item">
+    <div class="timeline-time" style="color:var(--green)">Top Pick</div>
+    <div class="timeline-body">
+      <strong><a href="https://www.google.com/maps/search/Why+Coffee+Kaiserstrasse+36+Frankfurt" style="color:inherit" target="_blank">Why Coffee</a></strong>
+      <div class="sub">Kaiserstraße 36 · 4 min walk · Single origin, precision-brewed. Open ~8 AM–6 PM.</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-time">Also Good</div>
+    <div class="timeline-body">
+      <strong><a href="https://www.google.com/maps/search/einszwei+Coffee+Gutleutstrasse+14+Frankfurt" style="color:inherit" target="_blank">einszwei</a></strong>
+      <div class="sub">Gutleutstraße 14 · 6 min walk · Specialty roaster.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DINNER -->
+<div class="card">
+  <h2><span class="icon">🥩</span> Dinner Tonight</h2>
+  <div class="timeline-item">
+    <div class="timeline-time" style="color:var(--green)">Top Pick</div>
+    <div class="timeline-body">
+      <strong><a href="https://www.google.com/maps/search/The+ASH+Frankfurt+Mainzer+Landstr+1" style="color:inherit" target="_blank">The ASH Frankfurt</a></strong>
+      <div class="sub">Mainzer Landstraße 1 · 4 min walk · Dry-aged Irish beef. Open kitchen. 11:30 AM–late.</div>
+    </div>
+  </div>
+</div>
+
+<div class="alert info" style="margin-top:16px">
+  <strong>💡 Pro tip:</strong> You've been on a plane all night. A proper steak, a strong coffee, and an early bed sets you up perfectly for tomorrow — Night 1 with Gojira and Knocked Loose.
+</div>
+
+<a href="#" class="quick-action">📍 Open in Google Maps</a>
+
+<div style="text-align:center;padding:24px 0 0;font-size:0.72rem;color:var(--dim)">
+  <a href="https://jarvisdanley.github.io/frankfurt-trip/" style="color:var(--dim)">← Full Trip Page</a>
+  &nbsp;·&nbsp;
+  <a href="https://jarvisdanley.github.io/" style="color:var(--dim)">All Trips</a>
+</div>
+
+</body>
+</html>
