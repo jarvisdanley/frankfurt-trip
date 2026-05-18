@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Frankfurt · Metallica No Repeat Weekend</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --card: #141414; --border: #222;
+    --text: #e0e0e0; --dim: #888; --accent: #ff6a00;
+    --green: #2ecc71; --red: #e74c3c; --blue: #3498db;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+    max-width: 480px; margin: 0 auto; padding: 16px 16px 40px;
+    -webkit-text-size-adjust: 100%;
+  }
+  .header {
+    text-align: center; padding: 20px 0 12px; border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .header h1 { font-size: 1.5rem; font-weight: 700; }
+  .header .dates { color: var(--dim); font-size: 0.9rem; margin-top: 4px; }
+  .header .emoji { font-size: 2.5rem; display: block; margin-bottom: 4px; }
+
+  .status-bar {
+    display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .status-pill {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 6px 14px; font-size: 0.8rem; white-space: nowrap; flex-shrink: 0;
+  }
+  .status-pill.good { border-color: var(--green); color: var(--green); }
+  .status-pill.warn { border-color: var(--accent); color: var(--accent); }
+
+  .section {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 14px;
+  }
+  .section h2 { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .section h2 .icon { font-size: 1.2rem; }
+
+  .update { padding: 10px; background: rgba(255,106,0,0.08); border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; }
+  .update .time { color: var(--accent); font-weight: 600; }
+
+  .flight-row {
+    display: grid; grid-template-columns: 48px 1fr; gap: 8px; align-items: start;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .flight-row:last-child { border-bottom: none; }
+  .flight-icon {
+    background: var(--bg); border-radius: 8px; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .flight-info .route { font-weight: 600; font-size: 0.9rem; }
+  .flight-info .detail { font-size: 0.78rem; color: var(--dim); }
+
+  .day-block { margin-bottom: 14px; }
+  .day-label {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent); font-weight: 700; margin-bottom: 4px;
+  }
+  .day-event {
+    padding: 8px 10px; background: var(--bg); border-radius: 6px;
+    margin-bottom: 4px; font-size: 0.85rem;
+  }
+  .day-event .time { font-weight: 600; color: var(--accent); }
+
+  .rec-card {
+    padding: 12px; background: var(--bg); border-radius: 8px; margin-bottom: 8px;
+    position: relative;
+  }
+  .rec-card .name { font-weight: 600; }
+  .rec-card .desc { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
+  .rec-card .meta { font-size: 0.75rem; color: var(--dim); margin-top: 4px; }
+  .rec-card .badge {
+    position: absolute; top: 10px; right: 12px; font-size: 0.7rem;
+    padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .badge.top { background: rgba(255,106,0,0.2); color: var(--accent); }
+  .badge.near { background: rgba(52,152,219,0.2); color: var(--blue); }
+  .badge.award { background: rgba(46,204,113,0.2); color: var(--green); }
+
+  .tip { font-size: 0.82rem; padding: 8px 12px; background: rgba(52,152,219,0.08); border-radius: 8px; margin-bottom: 6px; }
+  .tip strong { color: var(--blue); }
+
+  .countdown {
+    text-align: center; padding: 10px; font-size: 0.9rem;
+  }
+  .countdown .num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+
+  .footer {
+    text-align: center; font-size: 0.7rem; color: var(--dim);
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .footer a { color: var(--accent); }
+
+  .tag { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.7rem; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🎸</span>
+  <h1>Metallica · No Repeat Weekend</h1>
+  <div class="dates">Frankfurt am Main · May 20–25, 2026</div>
+</div>
+
+<div class="status-bar">
+  <span class="status-pill good">✈️ Flights On Time</span>
+  <span class="status-pill good">🌤️ 76-86°F Sunny</span>
+  <span class="status-pill good">🎫 Tickets w/ Debbie</span>
+  <span class="status-pill good">💺 Seats Assigned</span>
+</div>
+
+<!-- ATLAS UPDATES -->
+<div class="section">
+  <h2><span class="icon">🤖</span> Atlas Updates</h2>
+  <div class="update">
+    <div class="time">Sun May 17 — 11:30 PM CDT</div>
+    Two days out. All flights on schedule. Weather in Frankfurt is perfect — sunny all weekend, 76-86°F. Don't forget a Type C/F power adapter. Wäldchestag (Frankfurt's folk festival) runs the same weekend in the city forest next to the stadium.
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="section">
+  <h2><span class="icon">⏱️</span> Countdown</h2>
+  <div class="countdown">
+    <div class="num" id="countdown-days">2</div>
+    <div>days until departure</div>
+    <div style="margin-top:6px;font-size:0.75rem;color:var(--dim)">
+      Concert #1 in <span id="countdown-concert" style="color:var(--accent);font-weight:600">5</span> days
+    </div>
+  </div>
+</div>
+
+<!-- WEATHER -->
+<div class="section">
+  <h2><span class="icon">🌤️</span> Weather</h2>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center;font-size:0.75rem">
+    <div><div style="color:var(--dim)">Wed</div><div>20</div><div style="font-size:0.65rem;color:var(--dim)">DTW</div></div>
+    <div><div style="color:var(--dim)">Thu</div><div>21</div><div style="color:var(--green)">76°/51°</div></div>
+    <div><div style="color:var(--dim)">Fri</div><div>22</div><div style="color:var(--green)">82°/53°</div></div>
+    <div><div style="color:var(--dim)">Sat</div><div>23</div><div style="color:var(--green)">86°/57°</div></div>
+    <div><div style="color:var(--dim)">Sun</div><div>24</div><div style="color:var(--green)">86°/59°</div></div>
+  </div>
+  <div style="font-size:0.7rem;color:var(--dim);margin-top:8px;text-align:center">Sunny all weekend. Pack light. One jacket for evenings.</div>
+</div>
+
+<!-- FLIGHTS -->
+<div class="section">
+  <h2><span class="icon">✈️</span> Flights · Delta</h2>
+
+  <div style="font-weight:600;color:var(--accent);font-size:0.8rem;margin-bottom:8px">OUTBOUND · Wed May 20</div>
+  <div class="flight-row">
+    <div class="flight-icon">🛫</div>
+    <div class="flight-info">
+      <div class="route">MCI → DTW · DL 1256</div>
+      <div class="detail">6:30 AM CDT → 9:28 AM EDT · 1h 58m</div>
+      <div class="detail">Boeing 717-200</div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:4px;color:var(--dim);font-size:0.75rem">⏸️ 10h layover in Detroit</div>
+  <div class="flight-row">
+    <div class="flight-icon">🛫</div>
+    <div class="flight-info">
+      <div class="route">DTW → FRA · DL 86</div>
+      <div class="detail">7:30 PM EDT → 9:50 AM CEST (+1) · 8h 20m</div>
+      <div class="detail">Airbus A330-200</div>
+    </div>
+  </div>
+
+  <div style="font-weight:600;color:var(--accent);font-size:0.8rem;margin:12px 0 8px">RETURN · Mon May 25</div>
+  <div class="flight-row">
+    <div class="flight-icon">🛬</div>
+    <div class="flight-info">
+      <div class="route">FRA → DTW · DL 87</div>
+      <div class="detail">11:00 AM CEST → 2:15 PM EDT · 9h 15m</div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:4px;color:var(--dim);font-size:0.75rem">⏸️ 1h 44m layover in Detroit</div>
+  <div class="flight-row">
+    <div class="flight-icon">🏠</div>
+    <div class="flight-info">
+      <div class="route">DTW → MCI · DL 2761</div>
+      <div class="detail">3:59 PM EDT → 5:01 PM CDT · 2h 2m</div>
+    </div>
+  </div>
+</div>
+
+<!-- DTW LAYOVER -->
+<div class="section">
+  <h2><span class="icon">🛑</span> Detroit Layover · 10 Hours</h2>
+  <div class="rec-card">
+    <span class="badge top">Top Pick</span>
+    <div class="name">🏛️ The Henry Ford Museum</div>
+    <div class="desc">World-class American innovation museum. JFK's limo, Rosa Parks bus, Wright Brothers' workshop.</div>
+    <div class="meta">15 min from DTW · Uber ~$20 · Open 9:30 AM–5 PM · Spend 3-4 hrs, lunch on site, back by 5:30</div>
+  </div>
+  <div class="rec-card">
+    <span class="badge near">Alt</span>
+    <div class="name">🏙️ Downtown Detroit</div>
+    <div class="desc">Motown Museum, Riverwalk, Guardian Building, Coney dogs at Lafayette.</div>
+    <div class="meta">25 min from DTW · Uber ~$30</div>
+  </div>
+  <div class="rec-card">
+    <div class="name">🛋️ Stay at Airport</div>
+    <div class="desc">5 Delta Sky Clubs in McNamara Terminal (A38 has showers). Light Tunnel, Be Relax Spa.</div>
+    <div class="meta">Amex Platinum or Delta Reserve = free access</div>
+  </div>
+</div>
+
+<!-- ITINERARY -->
+<div class="section">
+  <h2><span class="icon">📅</span> Itinerary</h2>
+
+  <div class="day-block">
+    <div class="day-label">Wed May 20 · Travel Day</div>
+    <div class="day-event"><span class="time">4:30 AM</span> Leave for MCI</div>
+    <div class="day-event"><span class="time">6:30 AM</span> ✈️ DL 1256 MCI → DTW</div>
+    <div class="day-event"><span class="time">9:28 AM</span> Land DTW · 10h layover → Henry Ford?</div>
+    <div class="day-event"><span class="time">7:30 PM</span> ✈️ DL 86 DTW → FRA</div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">Thu May 21 · Arrival</div>
+    <div class="day-event"><span class="time">9:50 AM</span> Land Frankfurt (FRA)</div>
+    <div class="day-event"><span class="time">~10:10 AM</span> S-Bahn S8/S9 → Hauptbahnhof (12 min, €5.80)</div>
+    <div class="day-event"><span class="time">3:00 PM</span> 🏨 Check-in LUME Boutique Hotel</div>
+    <div class="day-event">Evening: Settle in, explore Bahnhofsviertel, grab coffee at Why?</div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">Fri May 22 · Metallica Night 1 🎸</div>
+    <div class="day-event">Day: Explore Frankfurt · Kleinmarkthalle, Römerberg, Main Tower</div>
+    <div class="day-event">Evening: 🎵 Metallica + Gojira + Knocked Loose @ Deutsche Bank Park</div>
+    <div class="day-event" style="color:var(--dim);font-size:0.75rem">S-Bahn to "Stadion" station · Extra transit running for concert</div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">Sat May 23 · Free Day</div>
+    <div class="day-event">Museumsufer · Städel Museum, Senckenberg (dinosaurs!), MMK</div>
+    <div class="day-event">Sachsenhausen stroll · Eiserner Steg bridge · Apfelwein taverns</div>
+    <div class="day-event" style="color:var(--dim);font-size:0.75rem">Wäldchestag festival in Stadtwald (next to stadium) all weekend</div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">Sun May 24 · Metallica Night 2 🎸</div>
+    <div class="day-event">Day: Relaxed morning · coffee crawl · Palmengarten?</div>
+    <div class="day-event">Evening: 🎵 Metallica Night 2 · completely different setlist</div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-label">Mon May 25 · Return</div>
+    <div class="day-event"><span class="time">~9:00 AM</span> Head to FRA (S-Bahn from Hbf, 12 min)</div>
+    <div class="day-event"><span class="time">11:00 AM</span> ✈️ DL 87 FRA → DTW</div>
+    <div class="day-event"><span class="time">12:00 PM</span> Hotel checkout</div>
+    <div class="day-event"><span class="time">5:01 PM CDT</span> 🏠 Home — MCI</div>
+  </div>
+</div>
+
+<!-- CONCERT -->
+<div class="section">
+  <h2><span class="icon">🎸</span> The Shows</h2>
+  <div class="rec-card">
+    <span class="badge top">Night 1</span>
+    <div class="name">Friday May 22 · Deutsche Bank Park</div>
+    <div class="desc">Metallica + Gojira + Knocked Loose</div>
+    <div class="meta">Mörfelder Landstraße 362 · Doors TBA</div>
+  </div>
+  <div class="rec-card">
+    <span class="badge top">Night 2</span>
+    <div class="name">Sunday May 24 · Deutsche Bank Park</div>
+    <div class="desc">Metallica — completely different setlist, zero repeat songs</div>
+    <div class="meta">Different openers · In-the-round 360° stage + Snake Pit</div>
+  </div>
+  <div class="tip"><strong>🚊 Getting there:</strong> S-Bahn S7/S8/S9 from Hauptbahnhof → "Stadion" (6 min) + 10-min walk. Extra trams & buses running for concert. Your ticket may include RMV transit.</div>
+  <div class="tip"><strong>🎪 Bonus:</strong> Wäldchestag — Frankfurt's folk festival — runs May 22-26 in the park right next to the stadium. Rides, food, music. Go early before the show.</div>
+</div>
+
+<!-- HOTEL -->
+<div class="section">
+  <h2><span class="icon">🏨</span> Hotel</h2>
+  <div class="rec-card">
+    <div class="name">LUME Boutique Hotel, Autograph Collection</div>
+    <div class="desc">Neckarstrasse 7-13, 60329 Frankfurt · Premium King</div>
+    <div class="meta">Check-in Thu 3 PM · Check-out Mon 12 PM · +49-69-756660</div>
+    <div class="meta" style="color:var(--accent)">5 min walk from Hauptbahnhof</div>
+  </div>
+  <div class="tip"><strong>⚠️ Cancel deadline:</strong> Wed May 20, 11:59 PM Frankfurt time. Late cancel fee: €768.</div>
+</div>
+
+<!-- STEAK -->
+<div class="section">
+  <h2><span class="icon">🥩</span> Steakhouses</h2>
+
+  <div class="rec-card">
+    <span class="badge top">Top Pick</span>
+    <div class="name">The ASH Frankfurt</div>
+    <div class="desc">American steakhouse. Dry-aged Irish beef, open kitchen, great atmosphere. Tomahawk for sharing.</div>
+    <div class="meta">Mainzer Landstr. 1 · 4 min walk from hotel · 11:30 AM–late</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge award">Award</span>
+    <div class="name">ABACCO'S Steakhouse</div>
+    <div class="desc">Voted best steakhouse in Germany. Historic Druckwasserwerk building on the Main river. Next-level.</div>
+    <div class="meta">Rotfeder-Ring 16 · Tram from hotel (~15 min) · 11:30 AM–12:30 AM</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Solid</span>
+    <div class="name">MAREDO Steakhaus</div>
+    <div class="desc">South American style. Reliable chain, good lunch option.</div>
+    <div class="meta">An der Hauptwache 7 · S-Bahn 1 stop from Hbf</div>
+  </div>
+</div>
+
+<!-- COFFEE -->
+<div class="section">
+  <h2><span class="icon">☕</span> Coffee</h2>
+
+  <div class="rec-card">
+    <span class="badge top">#1</span>
+    <div class="name">Why Coffee</div>
+    <div class="desc">Specialty coffee at its best. Single origin, precision-brewed. The real deal.</div>
+    <div class="meta">Kaiserstraße 36 · 4 min walk from hotel · Mon-Sun ~8 AM–6 PM</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Specialty</span>
+    <div class="name">einszwei</div>
+    <div class="desc">Specialty roaster + shop. They cup every coffee themselves. Serious about beans.</div>
+    <div class="meta">Gutleutstraße 14 · 6 min walk from hotel</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Alt</span>
+    <div class="name">drei Kaffeebar</div>
+    <div class="desc">Frankfurt's first specialty café. Changed the coffee scene here.</div>
+    <div class="meta">Fahrgasse 23 · 15 min walk or quick tram · Altstadt area</div>
+  </div>
+</div>
+
+<!-- SATURDAY -->
+<div class="section">
+  <h2><span class="icon">🗺️</span> Saturday · Free Day Ideas</h2>
+
+  <div class="rec-card">
+    <span class="badge top">Museums</span>
+    <div class="name">Museumsufer · 39 Museums</div>
+    <div class="desc">Städel (masterpieces), Senckenberg (dinosaurs), MMK (modern art), German Film Museum. MuseumsuferTicket: 2 days for €21.</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Walk</span>
+    <div class="name">Römerberg → Eiserner Steg → Sachsenhausen</div>
+    <div class="desc">Historic square → iconic bridge → apple wine district. Classic Frankfurt walk. Grab food at an Apfelwein tavern (Wagner's or Adolf's).</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Views</span>
+    <div class="name">Main Tower Observation Deck</div>
+    <div class="desc">56th floor, 200m up. Best skyline view in Germany. Open until 9 PM.</div>
+    <div class="meta">Neue Mainzer Str. 52-58 · €7.50</div>
+  </div>
+
+  <div class="rec-card">
+    <span class="badge near">Food</span>
+    <div class="name">Kleinmarkthalle</div>
+    <div class="desc">Indoor food market. 150+ stalls. Great for lunch grazing — sausages, cheeses, fresh produce.</div>
+    <div class="meta">Mon-Fri 8-6, Sat 8-4 · Near Römer</div>
+  </div>
+</div>
+
+<!-- TRANSIT -->
+<div class="section">
+  <h2><span class="icon">🚊</span> Getting Around</h2>
+  <div class="tip"><strong>🛬 Airport → Hotel:</strong> S-Bahn S8/S9 from FRA Regionalbahnhof (Terminal 1) → Frankfurt Hauptbahnhof. 12 min, €5.80, every 10-15 min. Hotel is 5 min walk from station.</div>
+  <div class="tip"><strong>🎸 Hotel → Concert:</strong> S-Bahn S7/S8/S9 from Hauptbahnhof → "Stadion" (6 min) + 10-min walk. Or Tram 21 to "Stadion." Extra service on concert nights.</div>
+  <div class="tip"><strong>💰 Tickets:</strong> Single trip €5.80, day pass €11.30 (all transit in Frankfurt). Buy at RMV machines (English available). Concert ticket may double as RMV KombiTicket.</div>
+  <div class="tip"><strong>📱 App:</strong> RMVgo for schedules & tickets. <a href="https://www.rmv.de" style="color:var(--blue)">rmv.de</a></div>
+</div>
+
+<!-- LOCAL TIPS -->
+<div class="section">
+  <h2><span class="icon">💡</span> Local Intel</h2>
+  <div class="tip"><strong>🔌 Power:</strong> Type C/F plugs, 230V. Bring an adapter.</div>
+  <div class="tip"><strong>💰 Currency:</strong> Euro (€). Cards widely accepted but carry some cash for smaller spots.</div>
+  <div class="tip"><strong>🗣️ Language:</strong> German. Most people in hospitality speak English. "Danke" goes a long way.</div>
+  <div class="tip"><strong>🕐 Time:</strong> CEST (UTC+2). 7 hours ahead of CDT.</div>
+  <div class="tip"><strong>🎪 Wäldchestag:</strong> Frankfurt's "national holiday" — folk festival in the city forest next to the stadium, May 22-26. Rides, food stalls, Ebbelwei (apple wine), music. Worth a pre-concert wander.</div>
+  <div class="tip"><strong>⚠️ Bahnhofsviertel:</strong> Gritty around the station after dark. Keep your wits on Kaiserstraße late at night. Fine during the day — that's where Why Coffee lives.</div>
+</div>
+
+<div class="footer">
+  Atlas Travel Concierge · Auto-refreshes with live updates<br>
+  Last updated: May 17, 2026 · <a href="#" onclick="location.reload()">Tap to refresh</a>
+</div>
+
+<script>
+// Countdown
+(function() {
+  const depart = new Date('2026-05-20T06:30:00-05:00'); // CDT
+  const concert1 = new Date('2026-05-22T19:00:00+02:00'); // CEST
+  function update() {
+    const now = new Date();
+    const d = Math.max(0, Math.ceil((depart - now) / 86400000));
+    const c = Math.max(0, Math.ceil((concert1 - now) / 86400000));
+    document.getElementById('countdown-days').textContent = d;
+    document.getElementById('countdown-concert').textContent = c;
+  }
+  update();
+  setInterval(update, 60000);
+})();
+</script>
+
+</body>
+</html>
