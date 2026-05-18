@@ -84,6 +84,17 @@
   .badge.near { background: rgba(52,152,219,0.2); color: var(--blue); }
   .badge.award { background: rgba(46,204,113,0.2); color: var(--green); }
 
+  .thumbs { display: flex; gap: 4px; margin-top: 8px; }
+  .thumbs button {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--dim); font-size: 0.9rem; padding: 3px 8px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .thumbs button:hover { border-color: var(--accent); }
+  .thumbs button.voted-up { background: rgba(46,204,113,0.15); border-color: var(--green); color: var(--green); }
+  .thumbs button.voted-down { background: rgba(231,76,60,0.15); border-color: var(--red); color: var(--red); }
+  .thumbs .count { font-size: 0.7rem; color: var(--dim); min-width: 16px; text-align: center; }
+
   .tip { font-size: 0.82rem; padding: 8px 12px; background: rgba(52,152,219,0.08); border-radius: 8px; margin-bottom: 6px; }
   .tip strong { color: var(--blue); }
 
@@ -340,6 +351,7 @@
     <div class="name">The ASH Frankfurt</div>
     <div class="desc">American steakhouse. Dry-aged Irish beef, open kitchen, great atmosphere. Tomahawk for sharing.</div>
     <div class="meta">Mainzer Landstr. 1 · 4 min walk from hotel · 11:30 AM–late</div>
+    <div class="thumbs"><button onclick="vote('steak-ash','up',this)" title="Loved it">👍</button><button onclick="vote('steak-ash','down',this)" title="Not for me">👎</button></div>
   </div>
 
   <div class="rec-card">
@@ -347,6 +359,8 @@
     <div class="name">ABACCO'S Steakhouse</div>
     <div class="desc">Voted best steakhouse in Germany. Historic Druckwasserwerk building on the Main river. Next-level.</div>
     <div class="meta">Rotfeder-Ring 16 · Tram from hotel (~15 min) · 11:30 AM–12:30 AM</div>
+  
+    <div class="thumbs"><button onclick="vote('steak-abacco','up',this)" title="Loved it">👍</button><button onclick="vote('steak-abacco','down',this)" title="Not for me">👎</button></div>
   </div>
 
   <div class="rec-card">
@@ -354,6 +368,8 @@
     <div class="name">MAREDO Steakhaus</div>
     <div class="desc">South American style. Reliable chain, good lunch option.</div>
     <div class="meta">An der Hauptwache 7 · S-Bahn 1 stop from Hbf</div>
+  
+    <div class="thumbs"><button onclick="vote('steak-maredo','up',this)" title="Loved it">👍</button><button onclick="vote('steak-maredo','down',this)" title="Not for me">👎</button></div>
   </div>
 </div>
 
@@ -366,6 +382,8 @@
     <div class="name">Why Coffee</div>
     <div class="desc">Specialty coffee at its best. Single origin, precision-brewed. The real deal.</div>
     <div class="meta">Kaiserstraße 36 · 4 min walk from hotel · Mon-Sun ~8 AM–6 PM</div>
+  
+    <div class="thumbs"><button onclick="vote('coffee-why','up',this)" title="Loved it">👍</button><button onclick="vote('coffee-why','down',this)" title="Not for me">👎</button></div>
   </div>
 
   <div class="rec-card">
@@ -373,6 +391,8 @@
     <div class="name">einszwei</div>
     <div class="desc">Specialty roaster + shop. They cup every coffee themselves. Serious about beans.</div>
     <div class="meta">Gutleutstraße 14 · 6 min walk from hotel</div>
+  
+    <div class="thumbs"><button onclick="vote('coffee-einszwei','up',this)" title="Loved it">👍</button><button onclick="vote('coffee-einszwei','down',this)" title="Not for me">👎</button></div>
   </div>
 
   <div class="rec-card">
@@ -380,6 +400,8 @@
     <div class="name">drei Kaffeebar</div>
     <div class="desc">Frankfurt's first specialty café. Changed the coffee scene here.</div>
     <div class="meta">Fahrgasse 23 · 15 min walk or quick tram · Altstadt area</div>
+  
+    <div class="thumbs"><button onclick="vote('coffee-drei','up',this)" title="Loved it">👍</button><button onclick="vote('coffee-drei','down',this)" title="Not for me">👎</button></div>
   </div>
 </div>
 
@@ -491,6 +513,54 @@
   }
   update();
   setInterval(update, 60000);
+})();
+</script>
+
+
+<script>
+function vote(id, dir, btn) {
+  var key = 'atlas_vote_' + id;
+  var current = localStorage.getItem(key);
+  var data = current ? JSON.parse(current) : {up:0, down:0, voted: null};
+  var container = btn.parentElement;
+  var upBtn = container.children[0];
+  var downBtn = container.children[1];
+  
+  // Toggle off if same vote
+  if (data.voted === dir) {
+    data[dir] = Math.max(0, data[dir] - 1);
+    data.voted = null;
+    upBtn.classList.remove('voted-up');
+    downBtn.classList.remove('voted-down');
+  } else {
+    // Undo previous vote
+    if (data.voted) {
+      data[data.voted] = Math.max(0, data[data.voted] - 1);
+    }
+    // Apply new vote
+    data[dir] = (data[dir] || 0) + 1;
+    data.voted = dir;
+    upBtn.classList.toggle('voted-up', dir === 'up');
+    downBtn.classList.toggle('voted-down', dir === 'down');
+  }
+  
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Restore state on load
+(function(){
+  document.querySelectorAll('.thumbs').forEach(function(el){
+    var btn = el.querySelector('button');
+    if (!btn) return;
+    var match = btn.getAttribute('onclick').match(/vote\('([^']+)'/);
+    if (!match) return;
+    var id = match[1];
+    var data = JSON.parse(localStorage.getItem('atlas_vote_' + id) || '{"up":0,"down":0,"voted":null}');
+    var upBtn = el.children[0];
+    var downBtn = el.children[1];
+    if (data.voted === 'up') upBtn.classList.add('voted-up');
+    if (data.voted === 'down') downBtn.classList.add('voted-down');
+  });
 })();
 </script>
 
