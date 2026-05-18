@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Today · Frankfurt</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --card: #141414; --border: #222;
+    --text: #e0e0e0; --dim: #888; --accent: #ff6a00;
+    --green: #2ecc71; --blue: #3498db; --red: #e74c3c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+    max-width: 480px; margin: 0 auto; padding: 16px 16px 48px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .header {
+    text-align: center; padding: 16px 0 12px;
+    border-bottom: 1px solid var(--border); margin-bottom: 14px;
+  }
+  .header .day-badge {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); font-weight: 700;
+  }
+  .header h1 { font-size: 1.2rem; margin: 4px 0 2px; }
+  .header .date { color: var(--dim); font-size: 0.8rem; }
+
+  /* WEATHER — TOP PRIORITY */
+  .weather-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .weather-card .w-main { display: flex; align-items: center; gap: 12px; }
+  .weather-card .w-icon { font-size: 2rem; }
+  .weather-card .w-temp { font-size: 1.8rem; font-weight: 700; }
+  .weather-card .w-lo { color: var(--dim); font-size: 0.9rem; }
+  .weather-card .w-detail { font-size: 0.78rem; color: var(--dim); }
+  .weather-card .w-alert {
+    font-size: 0.72rem; padding: 4px 10px; border-radius: 12px;
+    background: rgba(255,106,0,0.12); color: var(--accent);
+  }
+
+  .status-strip {
+    display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .pill {
+    font-size: 0.7rem; padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--border); white-space: nowrap;
+  }
+  .pill.good { border-color: var(--green); color: var(--green); }
+  .pill.warn { border-color: var(--accent); color: var(--accent); }
+  .pill.alert { border-color: var(--red); color: var(--red); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  .card h2 { font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .card h2 .icon { font-size: 1.1rem; }
+
+  .tl-item {
+    display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-time {
+    font-size: 0.75rem; color: var(--accent); font-weight: 700;
+    min-width: 68px; text-align: right; padding-top: 1px;
+  }
+  .tl-body { flex: 1; font-size: 0.85rem; }
+  .tl-body .sub { font-size: 0.75rem; color: var(--dim); margin-top: 2px; }
+
+  /* RECOMMENDATION CARD */
+  .rec {
+    padding: 12px; background: var(--bg); border-radius: 8px; margin-bottom: 8px;
+    position: relative;
+  }
+  .rec .name { font-weight: 600; font-size: 0.9rem; }
+  .rec .name a { color: inherit; text-decoration: none; }
+  .rec .desc { font-size: 0.78rem; color: var(--dim); margin-top: 3px; }
+  .rec .meta { font-size: 0.72rem; color: var(--dim); margin-top: 4px; }
+  .rec .badge {
+    position: absolute; top: 10px; right: 12px; font-size: 0.65rem;
+    padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .badge.top { background: rgba(255,106,0,0.2); color: var(--accent); }
+  .badge.near { background: rgba(52,152,219,0.2); color: var(--blue); }
+
+  .thumbs { display: flex; gap: 4px; margin-top: 8px; }
+  .thumbs button {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--dim); font-size: 0.85rem; padding: 3px 8px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .thumbs button:hover { border-color: var(--accent); }
+  .thumbs button.voted-up { background: rgba(46,204,113,0.15); border-color: var(--green); color: var(--green); }
+  .thumbs button.voted-down { background: rgba(231,76,60,0.15); border-color: var(--red); color: var(--red); }
+
+  .divider {
+    text-align: center; padding: 8px 0; color: var(--dim);
+    font-size: 0.72rem;
+  }
+
+  .tip {
+    font-size: 0.8rem; padding: 10px 12px; border-radius: 8px; margin-top: 10px;
+    background: rgba(52,152,219,0.08); border: 1px solid rgba(52,152,219,0.15);
+  }
+  .tip strong { color: var(--blue); }
+
+  .transit-num {
+    display: inline-flex; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: #000; font-weight: 700;
+    align-items: center; justify-content: center;
+    font-size: 0.65rem; margin-right: 6px; flex-shrink: 0; vertical-align: middle;
+  }
+
+  .footer {
+    text-align: center; padding: 20px 0 0; font-size: 0.72rem; color: var(--dim);
+    border-top: 1px solid var(--border); margin-top: 16px;
+  }
+  .footer a { color: var(--dim); }
+
+  .no-day {
+    text-align: center; padding: 60px 20px; color: var(--dim);
+  }
+  .no-day h2 { font-size: 1.3rem; margin-bottom: 8px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="day-badge" id="dayBadge">—</div>
+  <h1 id="dayTitle">Loading...</h1>
+  <div class="date" id="dayDate">—</div>
+</div>
+
+<!-- WEATHER -->
+<div class="weather-card" id="weatherCard"></div>
+
+<!-- STATUS PILLS -->
+<div class="status-strip" id="statusStrip"></div>
+
+<!-- TIMELINE -->
+<div class="card" id="timelineCard">
+  <h2><span class="icon">⏱️</span> Today's Schedule</h2>
+  <div id="timeline"></div>
+</div>
+
+<!-- TRANSIT (conditional) -->
+<div class="card" id="transitCard" style="display:none">
+  <h2><span class="icon">🚊</span> Getting Around</h2>
+  <div id="transitContent"></div>
+</div>
+
+<!-- MEALS -->
+<div class="card">
+  <h2><span class="icon">🥩</span> Food &amp; Drink</h2>
+  <div id="foodRecs"></div>
+</div>
+
+<!-- COFFEE -->
+<div class="card" id="coffeeCard">
+  <h2><span class="icon">☕</span> Coffee</h2>
+  <div id="coffeeRecs"></div>
+</div>
+
+<div id="tipsSection"></div>
+
+<div class="footer">
+  <a href="https://jarvisdanley.github.io/frankfurt-trip/">Full Trip Briefing</a>
+  &nbsp;·&nbsp;
+  <a href="https://jarvisdanley.github.io/">All Trips</a>
+  &nbsp;·&nbsp;
+  <span style="color:var(--accent)">Vicky Voss</span>
+</div>
+
+<script>
+// ── TRIP DATA ──────────────────────────────────
+const TRIP = {
+  start: new Date('2026-05-20T00:00:00-05:00'),
+  end:   new Date('2026-05-25T23:59:00+02:00'),
+  tz:    'Europe/Berlin',
+  days: [
+    { // Day 0 = Wed May 20 — Travel
+      label: 'Travel Day',
+      emoji: '✈️',
+      date: 'Wednesday, May 20, 2026',
+      weather: { hi: 64, lo: 53, icon: '🌧️', cond: 'Slight rain — pack the jacket', alert: 'Rain in KC & DTW', alertType: 'warn' },
+      pills: [
+        { text: '✈️ DL 1256 6:30 AM', type: 'warn' },
+        { text: '🕐 10h DTW Layover', type: 'good' },
+        { text: '🌧️ Rain', type: 'warn' },
+      ],
+      timeline: [
+        { time: '4:30 AM', body: 'Leave for MCI', sub: 'Economy Lot parking · blue shuttle' },
+        { time: '6:30 AM', body: '✈️ <strong>DL 1256</strong> MCI → DTW', sub: 'Boeing 717-200 · 1h 58m' },
+        { time: '9:28 AM', body: 'Land Detroit (DTW)', sub: 'McNamara Terminal · Concourse A' },
+        { time: '9:30 AM–7 PM', body: '10-hour layover — work from DTW', sub: 'Minute Suites near Gate A66 if you need a nap. Priority Pass = free 1st hour. $48-65/hr standard.' },
+        { time: '7:30 PM', body: '✈️ <strong>DL 86</strong> DTW → FRA', sub: 'Airbus A330-200 · 8h 20m · Overnight' },
+      ],
+      transit: false,
+      foods: [
+        { id: 'dtw-plum', name: 'Plum Market', badge: 'top', badgeClass: 'top', desc: 'Local/organic grab-and-go in McNamara Terminal. Sandwiches, salads, coffee. Way better than standard airport food.', meta: 'Concourse A · Near Gate A36', maps: 'Plum+Market+DTW+McNamara+Terminal' },
+        { id: 'dtw-leos', name: "Leo's Coney Island", badge: 'near', badgeClass: 'near', desc: 'Detroit institution since 1972. Coney dogs, Greek salads, chili fries. Proper local flavor in an airport.', meta: 'Concourse A · Near Gate A42', maps: 'Leos+Coney+Island+DTW+McNamara' },
+      ],
+      coffees: [
+        { id: 'dtw-starbucks', name: 'Starbucks', badge: '', badgeClass: '', desc: 'Multiple locations throughout McNamara. Reliable. Not exciting, but it\'ll do the job.', meta: 'Concourse A · Multiple locations', maps: 'Starbucks+DTW+McNamara' },
+      ],
+      tip: { type: 'info', html: '<strong>💡 Layover strategy:</strong> 10 hours is a lot of airport. Work a few hours, grab a coney dog from Leo\'s for lunch, then book a Minute Suite for a 2-hour nap before the overnight flight to Frankfurt.' },
+    },
+    { // Day 1 = Thu May 21 — Arrival
+      label: 'Arrival in Frankfurt',
+      emoji: '🇩🇪',
+      date: 'Thursday, May 21, 2026',
+      weather: { hi: 73, lo: 53, icon: '☁️', cond: 'Overcast · Light jacket', alert: null, alertType: null },
+      pills: [
+        { text: '🛬 Land 9:50 AM', type: 'good' },
+        { text: '🏨 LUME Hotel', type: 'good' },
+        { text: '🇩🇪 Passport Ready', type: 'good' },
+      ],
+      timeline: [
+        { time: '9:50 AM', body: '🛬 Land FRA — Terminal 2', sub: 'DL 86 from Detroit · 8h 20m flight' },
+        { time: '10:10 AM', body: 'Passport control + bags', sub: 'Non-EU line. ~20 min. Have passport ready.' },
+        { time: '10:30 AM', body: '<strong>Buy train ticket + board S-Bahn</strong>', sub: 'Green RMV machine on platform. €5.35 single ticket. S8 or S9 toward city.' },
+        { time: '11:00 AM', body: 'Arrive Hauptbahnhof', sub: '11 min ride · 3 stops' },
+        { time: '11:15 AM', body: 'Walk to LUME Boutique Hotel', sub: 'Neckarstraße 7-13 · 7 min walk from Hbf south exit' },
+        { time: '3:00 PM', body: '🏨 Hotel check-in', sub: 'Premium Double, 1 King. +49-69-756660' },
+        { time: 'Evening', body: 'Settle in + explore Bahnhofsviertel', sub: 'Coffee, dinner, walk. Early night — concert tomorrow.' },
+      ],
+      transit: [
+        { num: 1, text: 'Exit baggage claim. If Terminal 2, take <strong>SkyLine</strong> shuttle to Terminal 1 (free, 2 min).' },
+        { num: 2, text: 'Follow signs for <strong>Regionalbahnhof</strong>. Down two levels from T1 arrivals.' },
+        { num: 3, text: 'Green <strong>RMV</strong> ticket machine. English → Single ticket → Frankfurt City. <strong>€5.35</strong>. Tap to pay.' },
+        { num: 4, text: 'Platform 1. Board <strong>S8</strong> or <strong>S9</strong>. Every 15 min. Ride 3 stops to <strong>Hauptbahnhof</strong> (11 min).' },
+        { num: 5, text: 'Exit Hbf south side. Walk 7 min to <strong>Neckarstraße 7-13</strong>. LUME on your right.' },
+      ],
+      foods: [
+        { id: 'fra-ash', name: 'The ASH Frankfurt', badge: 'Top Pick', badgeClass: 'top', desc: 'Dry-aged Irish beef, open kitchen, proper steakhouse atmosphere. Tomahawk for sharing if you\'ve got company.', meta: 'Mainzer Landstraße 1 · 4 min walk · 11:30 AM–late', maps: 'The+ASH+Frankfurt+Mainzer+Landstr+1' },
+        { id: 'fra-abacco', name: "ABACCO'S Steakhouse", badge: 'Award', badgeClass: 'near', desc: 'Voted best steakhouse in Germany. Historic Druckwasserwerk building on the Main. A bit of a trek but worth it.', meta: 'Rotfeder-Ring 16 · Tram from hotel ~15 min · 11:30 AM–12:30 AM', maps: 'ABACCOS+Steakhouse+Frankfurt+Rotfeder+Ring+16' },
+        { id: 'fra-maredo', name: 'MAREDO Steakhaus', badge: '', badgeClass: '', desc: 'South American style. Reliable, good lunch option. Not life-changing, but solid.', meta: 'An der Hauptwache 7 · S-Bahn 1 stop from Hbf', maps: 'MAREDO+Steakhaus+Frankfurt+Hauptwache' },
+      ],
+      coffees: [
+        { id: 'fra-why', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'Single origin, precision-brewed. The real deal — this is what you fly across an ocean for.', meta: 'Kaiserstraße 36 · 4 min walk · ~8 AM–6 PM', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
+        { id: 'fra-einszwei', name: 'einszwei', badge: '', badgeClass: '', desc: 'Specialty roaster + shop. They cup every coffee themselves. Serious about beans.', meta: 'Gutleutstraße 14 · 6 min walk', maps: 'einszwei+Coffee+Gutleutstrasse+14+Frankfurt' },
+        { id: 'fra-drei', name: 'drei Kaffeebar', badge: '', badgeClass: '', desc: "Frankfurt's first specialty café. Changed the coffee scene here. Worth the walk.", meta: 'Fahrgasse 23 · 15 min walk or quick tram · Altstadt', maps: 'drei+Kaffeebar+Fahrgasse+23+Frankfurt' },
+      ],
+      tip: { type: 'info', html: '<strong>💡 Jet lag strategy:</strong> You land at 10 AM local time. Stay awake until at least 8 PM. Walk the neighborhood. A steak, a coffee, sunlight — that\'s your recipe for syncing to CEST on day one.' },
+    },
+    { // Day 2 = Fri May 22 — Concert Night 1
+      label: 'Metallica Night 1',
+      emoji: '🎸',
+      date: 'Friday, May 22, 2026',
+      weather: { hi: 80, lo: 53, icon: '⛅', cond: 'Partly cloudy · Perfect show weather', alert: null, alertType: null },
+      pills: [
+        { text: '🎸 Show Day', type: 'good' },
+        { text: '🛍️ Pop-Up Store Open', type: 'warn' },
+        { text: '🐍 Snake Pit', type: 'good' },
+      ],
+      timeline: [
+        { time: '3:00 AM', body: '🛍️ Line up at Pop-Up Store', sub: 'Kaiserstraße 28. 7 min walk from hotel. Limited merch. US lines started at 3 AM — bring coffee + chair.' },
+        { time: '~9:00 AM', body: 'Merch secured 🤘', sub: 'Head back to hotel for a nap' },
+        { time: '9 AM–1 PM', body: 'Nap & recharge', sub: 'You earned it' },
+        { time: '1:00 PM', body: '🐍 Head to Deutsche Bank Park', sub: 'Line up early for Snake Pit position. Bring snacks + drinks for the queue.' },
+        { time: '4:00 PM', body: 'Gates open', sub: 'Gojira + Knocked Loose opening' },
+        { time: '6:00 PM', body: 'Show starts', sub: 'First support act' },
+        { time: '~8:45 PM', body: '🤘 METALLICA', sub: 'No-repeat setlist. 360° in-the-round stage.' },
+      ],
+      transit: [
+        { num: 1, text: 'S-Bahn <strong>S7/S8/S9</strong> from Hauptbahnhof to <strong>Stadion</strong> — one stop, 6 minutes.' },
+        { num: 2, text: '10-minute walk from Stadion station to venue entrance. Follow the black t-shirts.' },
+        { num: 3, text: 'Return: Same route. Extra trams and buses deployed for concert nights. Your concert ticket likely includes RMV KombiTicket — check for transit logo.' },
+      ],
+      foods: [
+        { id: 'fra-ash2', name: 'The ASH Frankfurt', badge: 'Top Pick', badgeClass: 'top', desc: 'Pre-show fuel. Dry-aged Irish beef, 4 min from hotel. Get the tomahawk if you\'re with the crew.', meta: 'Mainzer Landstraße 1 · 4 min walk', maps: 'The+ASH+Frankfurt+Mainzer+Landstr+1' },
+        { id: 'fra-abacco2', name: "ABACCO'S Steakhouse", badge: 'Award', badgeClass: 'near', desc: "Germany's best steakhouse. Make a reservation — it fills up on concert weekends.", meta: 'Rotfeder-Ring 16 · Tram ~15 min', maps: 'ABACCOS+Steakhouse+Frankfurt+Rotfeder+Ring+16' },
+        { id: 'fra-wagner', name: "Adolf Wagner", badge: 'Local', badgeClass: 'near', desc: "Classic Frankfurt Apfelwein tavern. Hearty Hessian food — schnitzel, green sauce, handkäs. No alcohol needed — the food and atmosphere stand alone.", meta: 'Schweizer Str. 71 · Sachsenhausen · Tram 15-20 min', maps: 'Adolf+Wagner+Frankfurt+Schweizer+Strasse' },
+      ],
+      coffees: [
+        { id: 'fra-why2', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'Pre-merch-run coffee. Open early enough for your 3 AM Pop-Up Store mission? Check hours.', meta: 'Kaiserstraße 36 · 4 min walk', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
+        { id: 'fra-einszwei2', name: 'einszwei', badge: '', badgeClass: '', desc: 'Midday pick-me-up between nap and Snake Pit line. Serious beans.', meta: 'Gutleutstraße 14 · 6 min walk', maps: 'einszwei+Coffee+Gutleutstrasse+14+Frankfurt' },
+      ],
+      tip: { type: 'info', html: '<strong>🎸 Pop-Up Store strategy:</strong> Line up ~3 AM Friday. Bring a chair + coffee. Once you\'ve got your haul, head back to hotel for a nap before Snake Pit line at 1 PM. The US dates had lines forming by 3 AM — Frankfurt will be no different.' },
+    },
+    { // Day 3 = Sat May 23 — Free Day
+      label: 'Free Day + Wäldchestag',
+      emoji: '🎪',
+      date: 'Saturday, May 23, 2026',
+      weather: { hi: 82, lo: 58, icon: '☁️', cond: 'Overcast · Warm. No rain.', alert: 'Wäldchestag all day!', alertType: 'good' },
+      pills: [
+        { text: '🎪 Wäldchestag', type: 'good' },
+        { text: '🎸 Record Stores', type: 'good' },
+        { text: '☁️ No Rain', type: 'good' },
+      ],
+      timeline: [
+        { time: 'Morning', body: '☕ Coffee crawl', sub: 'Why Coffee → einszwei → drei Kaffeebar. Three of Frankfurt\'s best, all walkable.' },
+        { time: '12:00 PM', body: '🎪 Wäldchestag opens', sub: 'Frankfurt\'s folk festival in the city forest next to Deutsche Bank Park. Rides, food stalls, live music. Free admission.' },
+        { time: 'Afternoon', body: '🎸 Record Store Crawl', sub: 'Sick Wreckords (Sachsenhausen, since \'93 — Rock/Garage/Punk) · Mythos Records (Bornheim — Heavy Metal/Krautrock) · Lucky Star Records (Bornheim). Most open 11 AM–4 PM.' },
+        { time: 'Evening', body: 'Explore Sachsenhausen', sub: "Eiserner Steg bridge, Apfelwein taverns, Römerberg square. Kleinmarkthalle food market closes at 4 PM — go earlier." },
+      ],
+      transit: [
+        { num: 1, text: 'Wäldchestag: Tram <strong>21</strong> to "Oberforsthaus" or walk 20 min from Stadion S-Bahn.' },
+        { num: 2, text: 'Record stores: Sick Wreckords in Sachsenhausen (tram/U-Bahn), Mythos + Lucky Star in Bornheim (U4 to Bornheim Mitte).' },
+      ],
+      foods: [
+        { id: 'fra-wagner2', name: 'Adolf Wagner', badge: 'Local', badgeClass: 'top', desc: 'Sachsenhausen Apfelwein institution. Schnitzel, green sauce, handkäs mit musik. The real Frankfurt. Tourists go to the Romer; locals come here.', meta: 'Schweizer Str. 71 · Sachsenhausen · 15-20 min', maps: 'Adolf+Wagner+Frankfurt+Schweizer+Strasse' },
+        { id: 'fra-kleinmarkt', name: 'Kleinmarkthalle', badge: 'Market', badgeClass: 'near', desc: 'Indoor food market. 150+ stalls. Graze your way through — sausages, cheeses, fresh bread, pastries. Perfect for a casual afternoon.', meta: 'Near Römer · Mon-Fri 8-6, Sat 8-4', maps: 'Kleinmarkthalle+Frankfurt' },
+        { id: 'fra-ash3', name: 'The ASH Frankfurt', badge: '', badgeClass: '', desc: 'Can\'t go wrong. Dry-aged Irish beef — you know the drill by now.', meta: 'Mainzer Landstraße 1 · 4 min walk', maps: 'The+ASH+Frankfurt+Mainzer+Landstr+1' },
+      ],
+      coffees: [
+        { id: 'fra-why3', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'Start here. Always start here.', meta: 'Kaiserstraße 36 · 4 min walk', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
+        { id: 'fra-drei2', name: 'drei Kaffeebar', badge: '', badgeClass: '', desc: 'In the Altstadt. Combine with a Römerberg walk and Kleinmarkthalle visit.', meta: 'Fahrgasse 23 · 15 min walk · Altstadt', maps: 'drei+Kaffeebar+Fahrgasse+23+Frankfurt' },
+        { id: 'fra-einszwei3', name: 'einszwei', badge: '', badgeClass: '', desc: 'Grab a bag of beans to take home. They roast on-site.', meta: 'Gutleutstraße 14 · 6 min walk', maps: 'einszwei+Coffee+Gutleutstrasse+14+Frankfurt' },
+      ],
+      tip: { type: 'warn', html: '<strong>🎸 Record store warning:</strong> Most close by 4 PM Saturday. Start your crawl early — hit Sick Wreckords first (opens 11 AM), then head to Bornheim for Mythos and Lucky Star.' },
+    },
+    { // Day 4 = Sun May 24 — Concert Night 2
+      label: 'Metallica Night 2',
+      emoji: '🎸',
+      date: 'Sunday, May 24, 2026',
+      weather: { hi: 82, lo: 61, icon: '☁️', cond: 'Overcast · Warm evening', alert: null, alertType: null },
+      pills: [
+        { text: '🎸 Final Show', type: 'warn' },
+        { text: '🐍 Snake Pit', type: 'good' },
+        { text: '🎵 Unique Setlist', type: 'good' },
+      ],
+      timeline: [
+        { time: 'Morning', body: 'Relaxed morning — coffee crawl', sub: 'You\'ve earned a slow start. drei Kaffeebar in the Altstadt for a change of scenery.' },
+        { time: 'Afternoon', body: 'Palmengarten or Main Tower', sub: 'Botanical gardens or 56th-floor skyline views. Main Tower open until 9 PM (€7.50).' },
+        { time: '3:00 PM', body: 'Head to Deutsche Bank Park', sub: 'S-Bahn to Stadion. Same drill as Night 1.' },
+        { time: '4:00 PM', body: 'Gates open', sub: 'Pantera + Avatar opening. Completely different energy from Night 1.' },
+        { time: '6:00 PM', body: 'Show starts', sub: 'Pantera opening a Metallica show. Let that sink in.' },
+        { time: '~8:45 PM', body: '🤘 METALLICA Night 2', sub: 'Zero songs repeated from Friday. Totally unique setlist.' },
+      ],
+      transit: [
+        { num: 1, text: 'Same as Night 1: S-Bahn <strong>S7/S8/S9</strong> to Stadion. One stop, 6 min. Walk 10 min to venue.' },
+      ],
+      foods: [
+        { id: 'fra-ash4', name: 'The ASH Frankfurt', badge: 'Top Pick', badgeClass: 'top', desc: 'Final steak of the trip? Make it count.', meta: 'Mainzer Landstraße 1 · 4 min walk', maps: 'The+ASH+Frankfurt+Mainzer+Landstr+1' },
+        { id: 'fra-abacco3', name: "ABACCO'S Steakhouse", badge: 'Award', badgeClass: 'near', desc: 'If you didn\'t make it Thursday or Friday. Best steakhouse in Germany.', meta: 'Rotfeder-Ring 16 · Tram ~15 min', maps: 'ABACCOS+Steakhouse+Frankfurt+Rotfeder+Ring+16' },
+        { id: 'fra-wagner3', name: 'Adolf Wagner', badge: 'Local', badgeClass: 'near', desc: 'One last taste of real Frankfurt before you head home tomorrow.', meta: 'Schweizer Str. 71 · Sachsenhausen', maps: 'Adolf+Wagner+Frankfurt+Schweizer+Strasse' },
+      ],
+      coffees: [
+        { id: 'fra-why4', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'One last cup before the final show.', meta: 'Kaiserstraße 36 · 4 min walk', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
+        { id: 'fra-drei3', name: 'drei Kaffeebar', badge: '', badgeClass: '', desc: 'Altstadt morning. Combine with Palmengarten or Main Tower.', meta: 'Fahrgasse 23 · 15 min walk', maps: 'drei+Kaffeebar+Fahrgasse+23+Frankfurt' },
+      ],
+      tip: { type: 'info', html: '<strong>🎸 Final night:</strong> This is the one you flew across an ocean for. Pantera opening. Completely different setlist from Friday. No-repeat weekend means every song tonight is one you didn\'t hear on Night 1. Savor it.' },
+    },
+    { // Day 5 = Mon May 25 — Return
+      label: 'Return Home',
+      emoji: '🏠',
+      date: 'Monday, May 25, 2026',
+      weather: { hi: 84, lo: 64, icon: '⛅', cond: 'Partly cloudy · Frankfurt 84°F, KC 88°F', alert: 'Check out by noon', alertType: 'warn' },
+      pills: [
+        { text: '🛫 DL 87 11:00 AM', type: 'warn' },
+        { text: '🏨 Checkout noon', type: 'warn' },
+        { text: '🏠 KC 5:01 PM', type: 'good' },
+      ],
+      timeline: [
+        { time: '7:00 AM', body: 'Pack + final coffee', sub: 'Why Coffee for the road. One last proper cup before the airport.' },
+        { time: '8:30 AM', body: 'Head to FRA', sub: 'S-Bahn from Hauptbahnhof to Flughafen. 11 min. Reverse of your arrival route.' },
+        { time: '9:00 AM', body: 'FRA check-in + security', sub: 'DL 87. Terminal 2. Give yourself 2 hours.' },
+        { time: '11:00 AM', body: '✈️ <strong>DL 87</strong> FRA → DTW', sub: 'Airbus A330-200 · 9h 15m' },
+        { time: '12:00 PM', body: 'Hotel check-out', sub: 'Settle any charges before you leave.' },
+        { time: '2:15 PM EDT', body: 'Land DTW', sub: '1h 44m layover. Quick transfer.' },
+        { time: '3:59 PM EDT', body: '✈️ <strong>DL 2761</strong> DTW → MCI', sub: 'Boeing 717-200 · 2h 2m' },
+        { time: '5:01 PM CDT', body: '🏠 Home — Kansas City', sub: 'Walk out of MCI. Drive home. Sleep in your own bed.' },
+      ],
+      transit: [
+        { num: 1, text: 'Walk 7 min to <strong>Hauptbahnhof</strong>.' },
+        { num: 2, text: 'S-Bahn <strong>S8</strong> or <strong>S9</strong> to <strong>Flughafen</strong>. 11 min. €5.35.' },
+        { num: 3, text: 'If departing from Terminal 2, take SkyLine from Regionalbahnhof. Follow signs.' },
+      ],
+      foods: [
+        { id: 'fra-ash5', name: 'The ASH Frankfurt', badge: 'Top Pick', badgeClass: 'top', desc: 'They open at 11:30 AM. You\'ll be in the air by then. Grab something at FRA instead.', meta: '✈️ Airport food only today', maps: '' },
+        { id: 'fra-airport', name: 'FRA Terminal 2 — Goethe Bar', badge: '', badgeClass: '', desc: 'German sausages, pretzels, proper bread. Better than most airport food. Grab breakfast before your flight.', meta: 'FRA Terminal 2 · Airside', maps: 'Goethe+Bar+FRA+Terminal+2' },
+      ],
+      coffees: [
+        { id: 'fra-why5', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'One for the road. Open early. Last proper European coffee before DTW.', meta: 'Kaiserstraße 36 · 4 min walk', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
+      ],
+      tip: { type: 'info', html: '<strong>🏠 Going home:</strong> You\'ll be traveling for ~15 hours door-to-door. The 1h 44m DTW layover is tight but doable — same terminal (McNamara). Don\'t dawdle. The Frankfurt S-Bahn to the airport is the exact reverse of your arrival — you\'ve done this before.' },
+    },
+  ]
+};
+
+// ── RENDER ENGINE ────────────────────────────
+function getToday() {
+  const now = new Date();
+  // For demo: if we're before the trip, show Day 1 (Arrival)
+  // During the trip: show current day. After: show last day.
+  const startDay = new Date(TRIP.start);
+  startDay.setHours(0,0,0,0);
+  const endDay = new Date(TRIP.end);
+  endDay.setHours(23,59,59,999);
+
+  if (now < startDay) return 1; // Show Arrival day as preview
+  if (now > endDay) return TRIP.days.length - 1; // Show last day
+
+  const diffMs = now.getTime() - startDay.getTime();
+  const dayNum = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return Math.min(dayNum, TRIP.days.length - 1);
+}
+
+function renderDay(idx) {
+  const day = TRIP.days[idx];
+  if (!day) return;
+
+  // Header
+  document.getElementById('dayBadge').textContent = `Day ${idx+1} of ${TRIP.days.length}`;
+  document.getElementById('dayTitle').textContent = day.emoji + ' ' + day.label;
+  document.getElementById('dayDate').textContent = day.date;
+
+  // Weather
+  const w = day.weather;
+  let weatherHTML = `
+    <div class="w-main">
+      <div class="w-icon">${w.icon}</div>
+      <div>
+        <div class="w-temp">${w.hi}°</div>
+        <div class="w-lo">Lo ${w.lo}°F</div>
+      </div>
+    </div>
+    <div class="w-detail">${w.cond}</div>`;
+  if (w.alert) weatherHTML += `<div class="w-alert">${w.alert}</div>`;
+  document.getElementById('weatherCard').innerHTML = weatherHTML;
+
+  // Pills
+  document.getElementById('statusStrip').innerHTML = day.pills.map(p =>
+    `<span class="pill ${p.type}">${p.text}</span>`
+  ).join('');
+
+  // Timeline
+  document.getElementById('timeline').innerHTML = day.timeline.map(t =>
+    `<div class="tl-item">
+      <div class="tl-time">${t.time}</div>
+      <div class="tl-body">${t.body}<div class="sub">${t.sub}</div></div>
+    </div>`
+  ).join('');
+
+  // Transit
+  const tc = document.getElementById('transitCard');
+  if (day.transit) {
+    tc.style.display = '';
+    document.getElementById('transitContent').innerHTML = day.transit.map(s =>
+      `<div class="tl-item">
+        <div class="tl-time" style="min-width:28px"><span class="transit-num">${s.num}</span></div>
+        <div class="tl-body" style="font-size:0.82rem">${s.text}</div>
+      </div>`
+    ).join('');
+  } else {
+    tc.style.display = 'none';
+  }
+
+  // Food recs
+  document.getElementById('foodRecs').innerHTML = day.foods.map(f => {
+    const nameHTML = f.maps ? `<a href="https://www.google.com/maps/search/${f.maps}" target="_blank">${f.name}</a>` : f.name;
+    return `<div class="rec">
+      ${f.badge ? `<span class="badge ${f.badgeClass}">${f.badge}</span>` : ''}
+      <div class="name">${nameHTML}</div>
+      <div class="desc">${f.desc}</div>
+      <div class="meta">${f.meta}</div>
+      <div class="thumbs"><button onclick="vote('${f.id}','up',this)" title="Loved it">👍</button><button onclick="vote('${f.id}','down',this)" title="Not for me">👎</button></div>
+    </div>`;
+  }).join('');
+
+  // Coffee recs
+  document.getElementById('coffeeRecs').innerHTML = day.coffees.map(f => {
+    const nameHTML = f.maps ? `<a href="https://www.google.com/maps/search/${f.maps}" target="_blank">${f.name}</a>` : f.name;
+    return `<div class="rec">
+      ${f.badge ? `<span class="badge ${f.badgeClass}">${f.badge}</span>` : ''}
+      <div class="name">${nameHTML}</div>
+      <div class="desc">${f.desc}</div>
+      <div class="meta">${f.meta}</div>
+      <div class="thumbs"><button onclick="vote('${f.id}','up',this)" title="Loved it">👍</button><button onclick="vote('${f.id}','down',this)" title="Not for me">👎</button></div>
+    </div>`;
+  }).join('');
+
+  // Tip
+  const tip = day.tip;
+  if (tip) {
+    document.getElementById('tipsSection').innerHTML = `<div class="tip" style="background:${tip.type==='warn'?'rgba(255,106,0,0.08)':'rgba(52,152,219,0.08)'};border:1px solid ${tip.type==='warn'?'rgba(255,106,0,0.15)':'rgba(52,152,219,0.15)'}">${tip.html}</div>`;
+  } else {
+    document.getElementById('tipsSection').innerHTML = '';
+  }
+}
+
+// ── VOTING ────────────────────────────────────
+function vote(id, dir, btn) {
+  var key = 'vv_vote_' + id;
+  var current = localStorage.getItem(key);
+  var data = current ? JSON.parse(current) : {up:0, down:0, voted: null};
+  var container = btn.parentElement;
+  var upBtn = container.children[0];
+  var downBtn = container.children[1];
+
+  if (data.voted === dir) {
+    data[dir] = Math.max(0, data[dir] - 1);
+    data.voted = null;
+    upBtn.classList.remove('voted-up');
+    downBtn.classList.remove('voted-down');
+  } else {
+    if (data.voted) data[data.voted] = Math.max(0, data[data.voted] - 1);
+    data[dir] = (data[dir] || 0) + 1;
+    data.voted = dir;
+    upBtn.classList.toggle('voted-up', dir === 'up');
+    downBtn.classList.toggle('voted-down', dir === 'down');
+  }
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Restore votes
+(function(){
+  document.querySelectorAll('.thumbs').forEach(function(el){
+    var btn = el.querySelector('button');
+    if (!btn) return;
+    var match = btn.getAttribute('onclick').match(/vote\('([^']+)'/);
+    if (!match) return;
+    var id = match[1];
+    var data = JSON.parse(localStorage.getItem('vv_vote_' + id) || '{"up":0,"down":0,"voted":null}');
+    if (data.voted === 'up') el.children[0].classList.add('voted-up');
+    if (data.voted === 'down') el.children[1].classList.add('voted-down');
+  });
+})();
+
+// ── INIT ──────────────────────────────────────
+renderDay(getToday());
+</script>
+
+</body>
+</html>
