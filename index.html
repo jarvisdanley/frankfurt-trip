@@ -121,6 +121,7 @@
 </div>
 
 <div class="status-bar">
+  <span class="status-pill good">🟢 TRIP IN PROGRESS</span>
   <span class="status-pill good">✈️ Flights On Time</span>
   <span class="status-pill warn">⚠️ S9 Cancelled</span>
   <span class="status-pill good">☀️ 73-90°F No Rain!</span>
@@ -131,6 +132,10 @@
 <!-- ATLAS UPDATES -->
 <div class="section">
   <h2><span class="icon">🤖</span> Atlas Updates</h2>
+  <div class="update">
+    <div class="time">Wed May 20 — 6:00 AM CDT</div>
+    🟢 <strong>TRIP IN PROGRESS!</strong> Jeff is boarding DL 1256 MCI→DTW right now. Detroit bound for a 10-hour layover, then the overnight DL 86 to Frankfurt. All four flights on schedule. 🎸🤘
+  </div>
   <div class="update">
     <div class="time">Mon May 19 — 11:01 PM CDT</div>
     ✈️ <strong>DEPARTURE EVE.</strong> All four flights still on schedule. DL 86 consistently arrives 20-40 min early at FRA. DL 87 on-time rate 93%. Detroit: slight rain showers Wed (70°/45°) — pack a light rain shell for the MCI→DTW hop.<br>
@@ -158,10 +163,10 @@
 <div class="section">
   <h2><span class="icon">⏱️</span> Countdown</h2>
   <div class="countdown">
-    <div class="num" id="countdown-days">2</div>
-    <div>days until departure</div>
+    <div class="num" id="countdown-days">🟢</div>
+    <div id="countdown-label">TRIP IN PROGRESS</div>
     <div style="margin-top:6px;font-size:0.75rem;color:var(--dim)">
-      Concert #1 in <span id="countdown-concert" style="color:var(--accent);font-weight:600">5</span> days
+      Concert #1 in <span id="countdown-concert" style="color:var(--accent);font-weight:600">2</span> <span id="countdown-concert-label">days</span>
     </div>
   </div>
 </div>
@@ -523,7 +528,7 @@
 
 <div class="footer">
   Atlas Travel Concierge · Auto-refreshes with live updates<br>
-  Last updated: May 19, 2026 11:01 PM CDT · <a href="#" onclick="location.reload()">Tap to refresh</a>
+  Last updated: May 20, 2026 6:00 AM CDT · <a href="#" onclick="location.reload()">Tap to refresh</a>
 </div>
 
 <script>
@@ -533,10 +538,15 @@
   const concert1 = new Date('2026-05-22T19:00:00+02:00'); // CEST
   function update() {
     const now = new Date();
+    const tripStarted = now >= depart;
     const d = Math.max(0, Math.ceil((depart - now) / 86400000));
     const c = Math.max(0, Math.ceil((concert1 - now) / 86400000));
-    document.getElementById('countdown-days').textContent = d;
+    document.getElementById('countdown-days').textContent = tripStarted ? '🟢' : d;
+    document.getElementById('countdown-label').textContent = tripStarted ? 'TRIP IN PROGRESS' : 'days until departure';
     document.getElementById('countdown-concert').textContent = c;
+    if (tripStarted) {
+      document.getElementById('countdown-concert-label').textContent = 'until Metallica Night 1';
+    }
   }
   update();
   setInterval(update, 60000);
