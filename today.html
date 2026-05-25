@@ -366,8 +366,8 @@ const TRIP = {
       ],
       timeline: [
         { time: '7:00 AM', body: 'Pack + final coffee', sub: 'Why Coffee for the road if they\'re open. Otherwise grab a pastry near the station.' },
-        { time: '8:30 AM', body: '🚊 Head to FRA', sub: 'S-Bahn S8 or S9 from Hauptbahnhof → Flughafen Regionalbahnhof. 12 min, €5.80. S-Bahn IS running normally.' },
-        { time: '9:00 AM', body: 'FRA check-in + security', sub: 'DL 87. Terminal 2. 2-hour buffer.' },
+        { time: '8:30 AM', body: '🚊 Head to FRA Terminal 3', sub: 'S-Bahn S8/S9 → Flughafen Regionalbahnhof (12 min, €5.80). Then follow "Terminal 3 G, H, J" signs to SkyLine. SkyLine to T3 (~8 min). Delta check-in Zone 36, Gate J12.' },
+        { time: '9:00 AM', body: 'FRA check-in + security', sub: 'DL 87. Terminal 3, Zone 36. 2-hour buffer. T3 is new — give yourself extra time for navigation.' },
         { time: '11:00 AM', body: '✈️ <strong>DL 87</strong> FRA → DTW', sub: 'Airbus A330-200 · 9h 15m' },
         { time: '12:00 PM', body: 'Hotel check-out', sub: 'Settle any charges. Check-out by noon.' },
         { time: '2:15 PM EDT', body: 'Land DTW · 1h 44m layover', sub: 'Same terminal (McNamara). Tight but doable. Quick transfer — no time for lounges.' },
@@ -376,8 +376,10 @@ const TRIP = {
       ],
       transit: [
         { num: 1, text: 'Walk 7 min to <strong>Hauptbahnhof</strong>.' },
-        { num: 2, text: 'S-Bahn <strong>S8</strong> or <strong>S9</strong> to <strong>Flughafen Regionalbahnhof</strong>. 12 min. €5.80. <strong>Running normally.</strong>' },
-        { num: 3, text: 'If departing Terminal 2, take SkyLine shuttle from Regionalbahnhof.' },
+        { num: 2, text: 'S-Bahn <strong>S8</strong> or <strong>S9</strong> → <strong>Flughafen Regionalbahnhof</strong>. 12 min. €5.80.' },
+        { num: 3, text: 'Follow <strong>"Terminal 3 G, H, J"</strong> signs to SkyLine station.' },
+        { num: 4, text: '<strong>SkyLine to Terminal 3</strong> (~8 min). Delta check-in at <strong>Zone 36</strong>, Gate J12.' },
+        { num: 5, text: '⚠️ T3 is brand new (opened April 2026). Do NOT go to T2 — it\'s closed. Taxi backup: tell driver "Terminal 3."' },
       ],
       foods: [
         { id: 'fra-ash5', name: 'FRA Airport — Breakfast', badge: '', badgeClass: '', desc: 'Most restaurants at FRA open by 7 AM. Grab breakfast airside after security. Goethe Bar for German sausages and pretzels.', meta: '✈️ FRA Terminal 2 · Airside', maps: '' },
@@ -385,7 +387,7 @@ const TRIP = {
       coffees: [
         { id: 'fra-why5', name: 'Why Coffee', badge: '#1', badgeClass: 'top', desc: 'One for the road. Last proper European coffee before DTW. Opens ~9:30 AM — too late if leaving early.', meta: 'Kaiserstraße 36 · 4 min walk · Opens ~9:30 AM Sun', maps: 'Why+Coffee+Kaiserstrasse+36+Frankfurt' },
       ],
-      tip: { type: 'info', html: '<strong>🏠 Going home:</strong> ~15 hours door-to-door. The 1h 44m DTW layover is tight — same terminal (McNamara), but don\'t dawdle. S-Bahn S8/S9 to FRA is running normally — no stellwerk issues. Taxi backup: €35-40, 20-25 min.<br><br><strong>⏰ Timeline:</strong> Leave hotel 8:30 AM → At FRA by 9:00 AM → 11:00 AM departure → Land DTW 2:15 PM EDT → Land KC 5:01 PM CDT.' },
+      tip: { type: 'info', html: '<strong>🏠 Going home:</strong> ~15 hours door-to-door. The 1h 44m DTW layover is tight — same terminal (McNamara), but don\'t dawdle.<br><br><strong>⚠️ YOU ARE FLYING FROM TERMINAL 3.</strong> Delta moved from T2 to the new T3 on May 19, 2026. T2 is closed. From Regionalbahnhof, follow "Terminal 3 G, H, J" signs → SkyLine (~8 min). Delta check-in at Zone 36, Gate J12. Tell your Uber driver "Terminal 3."<br><br><strong>⏰ Timeline:</strong> Leave hotel 8:15 AM → S-Bahn 12 min → SkyLine ~15 min → At T3 by 8:50 AM → 11:00 AM departure → Land DTW 2:15 PM EDT → Land KC 5:01 PM CDT.' },
     },
   ]
 };
